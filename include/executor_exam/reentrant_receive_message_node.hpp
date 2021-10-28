@@ -1,24 +1,23 @@
-#ifndef __RECEIVE_MESSAGE_NODE_HPP__
-#define __RECEIVE_MESSAGE_NODE_HPP__
+#ifndef __REENTRANT_RECEIVE_MESSAGE_NODE_HPP__
+#define __REENTRANT_RECEIVE_MESSAGE_NODE_HPP__
 
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/string.hpp>
 
 namespace executor_test
 {
-    class ReceiveMessageNode : public rclcpp::Node
+    class ReentrantReceiveMessageNode : public rclcpp::Node
     {
         public:
-            explicit ReceiveMessageNode(const rclcpp::NodeOptions &options);
+            explicit ReentrantReceiveMessageNode(const rclcpp::NodeOptions &options);
 
         private:
+            rclcpp::CallbackGroup::SharedPtr callback_group_reentrant_;
             rclcpp::TimerBase::SharedPtr long_timer_;
-            rclcpp::Subscription<std_msgs::msg::String>::SharedPtr msg_sub_shallow;
-            rclcpp::Subscription<std_msgs::msg::String>::SharedPtr msg_sub_deep;
+            rclcpp::Subscription<std_msgs::msg::String>::SharedPtr msg_sub_;
 
             uint64_t counter_called_long_elapsed;
-            uint64_t counter_called_subscriber_shallow;
-            uint64_t counter_called_subscriber_deep;
+            uint64_t counter_called_subscriber;
 
             std::string received_message;
 

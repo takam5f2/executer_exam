@@ -30,18 +30,21 @@ add_library(tiny_sample_node SHARED src/nodes/tiny_sample_node.cpp)
 add_library(callback_group_based_sample_node SHARED src/nodes/callback_group_based_sample_node.cpp)
 add_library(throw_message_node SHARED src/nodes/throw_message_node.cpp)
 add_library(receive_message_node SHARED src/nodes/receive_message_node.cpp)
+add_library(reentrant_receive_message_node SHARED src/nodes/reentrant_receive_message_node.cpp)
 
 add_library_dependencies(sample_node)
 add_library_dependencies(tiny_sample_node)
 add_library_dependencies(callback_group_based_sample_node)
 add_library_dependencies(throw_message_node)
 add_library_dependencies(receive_message_node)
+add_library_dependencies(reentrant_receive_message_node)
 
 rclcpp_components_register_nodes(sample_node  "executor_exam::SampleNode")
 rclcpp_components_register_nodes(tiny_sample_node  "executor_exam::TinySampleNode")
 rclcpp_components_register_nodes(callback_group_based_sample_node  "executor_exam::CallbackGroupBasedSampleNode")
 rclcpp_components_register_nodes(throw_message_node "executor_exam::ThrowMessageNode")
 rclcpp_components_register_nodes(receive_message_node  "executor_exam::ReceiveMessageNode")
+rclcpp_components_register_nodes(reentrant_receive_message_node  "executor_exam::ReentrantReceiveMessageNode")
 
 # executable files.
 add_executable(timer_callback_multi_thread_exec src/timer_callback_multi_thread.cpp)
@@ -49,18 +52,21 @@ add_executable(timer_callback_single_thread_exec src/timer_callback_single_threa
 add_executable(multi_node_timer_callback_multi_thread_exec src/multi_node_timer_callback_multi_thread.cpp)
 add_executable(reentrant_timer_callback_multi_thread_exec src/reentrant_timer_callback_multi_thread.cpp)
 add_executable(throw_recv_multi_thread_exec src/throw_recv_multi_thread.cpp)
+add_executable(reentrant_throw_recv_multi_thread_exec src/reentrant_throw_recv_multi_thread.cpp)
 
 target_link_libraries(timer_callback_multi_thread_exec sample_node)
 target_link_libraries(timer_callback_single_thread_exec sample_node)
 target_link_libraries(multi_node_timer_callback_multi_thread_exec sample_node tiny_sample_node)
 target_link_libraries(reentrant_timer_callback_multi_thread_exec callback_group_based_sample_node)
 target_link_libraries(throw_recv_multi_thread_exec throw_message_node receive_message_node)
+target_link_libraries(reentrant_throw_recv_multi_thread_exec throw_message_node reentrant_receive_message_node)
 
 ament_target_dependencies(timer_callback_multi_thread_exec rclcpp std_msgs)
 ament_target_dependencies(timer_callback_single_thread_exec rclcpp std_msgs)
 ament_target_dependencies(multi_node_timer_callback_multi_thread_exec rclcpp std_msgs)
 ament_target_dependencies(reentrant_timer_callback_multi_thread_exec rclcpp std_msgs)
 ament_target_dependencies(throw_recv_multi_thread_exec rclcpp std_msgs)
+ament_target_dependencies(reentrant_throw_recv_multi_thread_exec rclcpp std_msgs)
 
 ament_export_dependencies(ament_cmake)
 ament_export_dependencies(rclcpp)
@@ -98,6 +104,11 @@ install(TARGETS
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
 )
+install(TARGETS
+  reentrant_receive_message_node
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+)
 
 
 install (TARGETS
@@ -118,6 +129,10 @@ install (TARGETS
 )
 install (TARGETS
   throw_recv_multi_thread_exec
+  DESTINATION lib/${PROJECT_NAME}
+)
+install (TARGETS
+  reentrant_throw_recv_multi_thread_exec
   DESTINATION lib/${PROJECT_NAME}
 )
 

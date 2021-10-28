@@ -38,6 +38,7 @@ namespace executor_test
 
         msg_pub_->publish(msg);
         publish_count_++;
+        RCLCPP_INFO(this->get_logger(), "Sender: %s", msg.data.c_str());
     }
 
 }

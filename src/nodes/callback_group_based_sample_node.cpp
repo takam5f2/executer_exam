@@ -22,7 +22,7 @@ namespace executor_test
         callback_group_short_ = this->create_callback_group(rclcpp::CallbackGroupType::Reentrant);
 
         auto short_opt = rclcpp::SubscriptionOptions();
-        short_opt.callback_group = callback_group_long_;
+        short_opt.callback_group = callback_group_short_;
 
         // timer.
         long_timer_ = this->create_wall_timer(1s, std::bind(&CallbackGroupBasedSampleNode::count_long_elapsed_time, this), callback_group_long_);
