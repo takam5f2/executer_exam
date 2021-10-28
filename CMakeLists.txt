@@ -16,22 +16,40 @@ find_package(std_msgs REQUIRED)
 
 include_directories(include)
 
-add_library(sample_node SHARED src/sample_node.cpp)
-target_compile_definitions(sample_node PRIVATE "SAMPLE_NODE_BUILDING_LIBRARY")
-ament_target_dependencies(sample_node
-  rclcpp
-  std_msgs
-  rclcpp_components
-)
+function(add_library_dependencies library)
+  target_compile_definitions(${library} PRIVATE "SAMPLE_NODE_BUILDING_DLL")
+  ament_target_dependencies(${library}
+    "rclcpp"
+    "rclcpp_components"
+    "std_msgs")
+endfunction()
+
+# library for node.
+add_library(sample_node SHARED src/nodes/sample_node.cpp)
+add_library(tiny_sample_node SHARED src/nodes/tiny_sample_node.cpp)
+add_library(callback_group_based_sample_node SHARED src/nodes/callback_group_based_sample_node.cpp)
+add_library_dependencies(sample_node)
+add_library_dependencies(tiny_sample_node)
+add_library_dependencies(callback_group_based_sample_node)
+
 rclcpp_components_register_nodes(sample_node  "executor_exam::SampleNode")
+rclcpp_components_register_nodes(tiny_sample_node  "executor_exam::TinySampleNode")
+rclcpp_components_register_nodes(callback_group_based_sample_node  "executor_exam::CallbackGroupBasedSampleNode")
 
-add_executable(timer_callback_multi_thread_node src/timer_callback_multi_thread.cpp)
-add_executable(timer_callback_single_thread_node src/timer_callback_single_thread.cpp)
+# executable files.
+add_executable(timer_callback_multi_thread_exec src/timer_callback_multi_thread.cpp)
+add_executable(timer_callback_single_thread_exec src/timer_callback_single_thread.cpp)
+add_executable(multi_node_timer_callback_multi_thread_exec src/multi_node_timer_callback_multi_thread.cpp)
+add_executable(reentrant_timer_callback_multi_thread_exec src/reentrant_timer_callback_multi_thread.cpp)
 
-target_link_libraries(timer_callback_multi_thread_node sample_node)
-target_link_libraries(timer_callback_single_thread_node sample_node)
-ament_target_dependencies(timer_callback_multi_thread_node rclcpp std_msgs)
-ament_target_dependencies(timer_callback_single_thread_node rclcpp std_msgs)
+target_link_libraries(timer_callback_multi_thread_exec sample_node)
+target_link_libraries(timer_callback_single_thread_exec sample_node)
+target_link_libraries(multi_node_timer_callback_multi_thread_exec sample_node tiny_sample_node)
+target_link_libraries(reentrant_timer_callback_multi_thread_exec callback_group_based_sample_node)
+ament_target_dependencies(timer_callback_multi_thread_exec rclcpp std_msgs)
+ament_target_dependencies(timer_callback_single_thread_exec rclcpp std_msgs)
+ament_target_dependencies(multi_node_timer_callback_multi_thread_exec rclcpp std_msgs)
+ament_target_dependencies(reentrant_timer_callback_multi_thread_exec rclcpp std_msgs)
 
 ament_export_dependencies(ament_cmake)
 ament_export_dependencies(rclcpp)
@@ -49,13 +67,31 @@ install(TARGETS
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
 )
+install(TARGETS
+  tiny_sample_node
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+)
+install(TARGETS
+  callback_group_based_sample_node
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+)
 
 install (TARGETS
-  timer_callback_multi_thread_node
+  timer_callback_single_thread_exec
   DESTINATION lib/${PROJECT_NAME}
 )
 install (TARGETS
-  timer_callback_single_thread_node
+  timer_callback_multi_thread_exec
+  DESTINATION lib/${PROJECT_NAME}
+)
+install (TARGETS
+  multi_node_timer_callback_multi_thread_exec
+  DESTINATION lib/${PROJECT_NAME}
+)
+install (TARGETS
+  reentrant_timer_callback_multi_thread_exec
   DESTINATION lib/${PROJECT_NAME}
 )
 
