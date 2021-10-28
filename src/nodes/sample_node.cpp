@@ -29,7 +29,7 @@ namespace executor_test
     void SampleNode::count_long_elapsed_time()
     {
         print_count_common("Long timer", counter_called_long_elapsed);
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1100));
         return;
     }
     void SampleNode::count_short_elapsed_time()
@@ -38,14 +38,14 @@ namespace executor_test
         msg.data = "Sent from short timer: " + std::to_string(counter_called_short_elapsed);
         print_count_common("Short timer", counter_called_short_elapsed);
         msg_pub_->publish(msg);
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     void SampleNode::print_sub_message(const std_msgs::msg::String::SharedPtr msg)
     {
         print_count_common("Subscriber", counter_called_subscriber);
         RCLCPP_INFO(this->get_logger(), "Subscribed Message: %s", msg->data.c_str());
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     void SampleNode::print_count_common(const std::string & callback_name, 
