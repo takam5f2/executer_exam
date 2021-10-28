@@ -14,11 +14,10 @@ namespace executor_test
         private:
             rclcpp::TimerBase::SharedPtr long_timer_;
             rclcpp::Subscription<std_msgs::msg::String>::SharedPtr msg_sub_shallow;
-            rclcpp::Subscription<std_msgs::msg::String>::SharedPtr msg_sub_deep;
+            rclcpp::Subscription<std_msgs::msg::String>::SharedPtr msg_sub;
 
             uint64_t counter_called_long_elapsed;
-            uint64_t counter_called_subscriber_shallow;
-            uint64_t counter_called_subscriber_deep;
+            uint64_t counter_called_subscriber;
 
             std::string received_message;
 
