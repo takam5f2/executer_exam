@@ -19,7 +19,7 @@ namespace executor_test
         // timer.
         long_timer_ = this->create_wall_timer(1s, std::bind(&ReceiveMessageNode::count_long_elapsed_time, this));
         // subscriber.
-        msg_sub_ = this->create_subscription<std_msgs::msg::String>("thrown_message", rclcpp::SensorDataQoS().keep_last(1), std::bind(&ReceiveMessageNode::recv_message, this, _1));
+        msg_sub_ = this->create_subscription<std_msgs::msg::String>("thrown_message", 1, std::bind(&ReceiveMessageNode::recv_message, this, _1));
     }
 
     void ReceiveMessageNode::count_long_elapsed_time()
@@ -36,6 +36,7 @@ namespace executor_test
         print_count_common("Subscriber", counter_called_subscriber);
         received_message = msg->data;
         RCLCPP_INFO(this->get_logger(), "Subscriber: %s", received_message.c_str());
+        std::this_thread::sleep_for(std::chrono::milliseconds(30));
     }
 
     void ReceiveMessageNode::print_count_common(const std::string & callback_name, 
